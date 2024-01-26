@@ -8,8 +8,8 @@ a fully fleshed out mario game with that game engine.
 
 # Screenshots
  -----------
-<img width="45%" src="./images/mario1.png"/>
-<img width="45%" src="./images/mario2.png"/> 
+<img width="45%" src="./images/mario01.png"/>
+<img width="45%" src="./images/mario02.png"/> 
 
 
  
