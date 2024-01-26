@@ -21,14 +21,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
- * This code was originally created by Raifuzu Inc. This code is open source for 
+ * This code was originally created by Rayfuzu Inc. This code is open source for 
  * anyone who thinks that they can make it better.
  *
  * @author Courtney Jean Downs 
  */
 public class MarioClone extends Application implements EventHandler<ActionEvent> {
 
-    final int SCENE_WIDTH = 650, SCENE_HEIGHT = 450;
+    final int SCENE_WIDTH = 750, SCENE_HEIGHT = 450;
     Player mario;
     final int SUPER_SPEED = 50;
     final int NORMAL_SPEED = 4;
@@ -36,10 +36,10 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
 
     ArrayList<Structure> structures;
     ArrayList<Pipe> pipes;
-    final double NORMAL_GROUND_Y_AXIS = 370;
+    final double NORMAL_GROUND_Y_AXIS = 350;
     final double NORMAL_CEILING_Y_AXIS = 50;
     double floor = NORMAL_GROUND_Y_AXIS;
-    double playersYAxis = 370;
+    double playersYAxis = 0;
     double ceiling = 0;
     int animationSpeed = 2;
 
@@ -47,6 +47,21 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         launch(args);
     }
 
+    
+    // **************************************************************************************
+    // TODO: Improvements 
+    //      - variable cloud groupings and variable altitudes (not just one every 100ft)
+    //      - pipes that are connected horizzontally to vertical pipes 
+    //      - flag pole 
+    //      - stairs of smaller bricks 
+    //      - more accurage collision detection 
+    // 
+    // **************************************************************************************
+
+    
+    
+    
+    
     @Override
     public void start(Stage primaryStage) {
 
@@ -61,7 +76,7 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         //Make the player jump if click on screen
         root.setOnMouseClicked((MouseEvent event) -> {
 
-            final int JUMP_HEIGHT = 150;
+            final int JUMP_HEIGHT = 90;
             //if mario is under the ceiling then let him jump
             if (playersYAxis > ceiling) {
                 playersYAxis -= JUMP_HEIGHT;
@@ -94,18 +109,22 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         //The list that all of the objects in the collections below are added to
         ArrayList<GameObject> map = new ArrayList<>();
 
-        ArrayList<GameObject> clouds = createClouds(25, 100, 70);//quantity, width, height 
-        Pipe p1 = createPipe("mario_pipe.png", 50.0, NORMAL_GROUND_Y_AXIS - 70.0, 50, 100);//x,y,width,height
+        ArrayList<GameObject> clouds = createClouds(25);//quantity, width, height 
+        Pipe p1 = createPipe("mario_pipe.png", 50.0, NORMAL_GROUND_Y_AXIS - 50.0, 50, 100);//x,y,width,height
+        Pipe p2 = createPipe("mario_pipe.png", 800.0, NORMAL_GROUND_Y_AXIS - 50.0, 50, 100);//x,y,width,height
         pipes.add(p1);
+        pipes.add(p2);
 
         int vBlocks = 2, hBlocks = 5;
         StructureType type = StructureType.CUSTOM_NORMAL;
         double initX = 220, initY = 150.0;
         ArrayList<Integer> inactiveBlocks = new ArrayList<>();
+        inactiveBlocks.add(5);
         inactiveBlocks.add(6);
         inactiveBlocks.add(7);
         inactiveBlocks.add(8);
-        Structure s1 = createStructure(vBlocks, hBlocks, type, initX, initY, inactiveBlocks);
+        inactiveBlocks.add(9);
+        Structure s1 = createStructure(vBlocks, hBlocks, StructureType.CUSTOM_NORMAL, initX, initY, inactiveBlocks);
 
         vBlocks = 1;
         hBlocks = 4;
@@ -113,22 +132,18 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         initY = 200.0;
         inactiveBlocks.clear();
 
-        Structure s2 = createStructure(vBlocks, hBlocks, type, initX, initY, inactiveBlocks);
-        initY -= 45;
-        initX += 300;
-        vBlocks = 5;
-        hBlocks = 5;
-        inactiveBlocks.add(6);
-        inactiveBlocks.add(7);
-        inactiveBlocks.add(8);
-        inactiveBlocks.add(11);
-        inactiveBlocks.add(12);
-        inactiveBlocks.add(13);
-        inactiveBlocks.add(16);
-        inactiveBlocks.add(21);
-        inactiveBlocks.add(22);
-        inactiveBlocks.add(23);
-        inactiveBlocks.add(24);
+        Structure s2 = createStructure(vBlocks, hBlocks, StructureType.REGULAR_INTERACTIVE, initX, initY, inactiveBlocks);
+        initY = 200;
+        initX += 900;
+        vBlocks = 4;
+        hBlocks = 4;
+        inactiveBlocks.add(0);
+        inactiveBlocks.add(1);
+        inactiveBlocks.add(2); 
+        inactiveBlocks.add(4); 
+        inactiveBlocks.add(5); 
+        inactiveBlocks.add(8); 
+        
         Structure s3 = createStructure(vBlocks, hBlocks, type, initX, initY, inactiveBlocks);
         structures.add(s1);
         structures.add(s2);
@@ -141,6 +156,7 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         //Adding everything to the map (ArrayList<ImageView>)
         addGameObjectsToMap(map, clouds);
         map.add(p1);
+        map.add(p2);
         addStrucutreToMap(map, s1);
         addStrucutreToMap(map, s2);
         addStrucutreToMap(map, s3);
@@ -155,16 +171,24 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         return map;
     }//buildInitialMap()
 
-    private ArrayList<GameObject> createClouds(int quantity, double width, double height) {
+    private ArrayList<GameObject> createClouds(int quantity ) {
+        
+        
+        double width = 103;//(int) (90 + Math.random() * 100);//100;
+        double height = 72;//(int) (60 + Math.random() * 70);//70;
+        
         ArrayList<GameObject> allClouds = new ArrayList<>();
         double layoutX = 100;
+        double previousCloudX = 0;
         for (int i = 0; i < quantity; i++) {
             Image newCloud = new Image("cloud.png");
             GameObject newView = new GameObject(newCloud);
             newView.setLayoutX(layoutX);
             //Calculates space between clouds
-            layoutX = layoutX + (int) (300 + Math.random() * 410);
-            newView.setLayoutY(20);
+            layoutX = previousCloudX + (int) (10 + Math.random() * 410);
+            previousCloudX = layoutX;
+            
+            newView.setLayoutY( (int) (12 + Math.random() * 30) ); // 20
             newView.setFitWidth(width);
             newView.setFitHeight(height);
             allClouds.add(newView);
@@ -179,20 +203,20 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         final int TOTAL_BLOCKS = vBlocks * hBlocks;
         Structure newStructure = new Structure();
         //initialize a CUSTOM_NORMAL, and REGULAR_NORMAL  structure 
-        initStructure(TOTAL_BLOCKS, vBlocks, initX, initY, newStructure, inactiveBlocks);
+        initStructure(TOTAL_BLOCKS, vBlocks, initX, initY, newStructure, inactiveBlocks, type);
 
         return newStructure;
     }
 
     private void initStructure(int totalBlocks, int vBlocks, double initLayoutX, double layoutY,
-            ArrayList<GameObject> newGroup, ArrayList<Integer> inactiveBlocks) {
+            ArrayList<GameObject> newGroup, ArrayList<Integer> inactiveBlocks, StructureType type) {
 
         final int BLOCK_WIDTH = 40;
         final int BLOCK_HEIGHT = BLOCK_WIDTH;
         for (int i = 0; i < totalBlocks; i++) {
 
             int hBlocks = totalBlocks / vBlocks;
-            GameObject newBlock = setBlockImage(StructureType.CUSTOM_NORMAL);
+            GameObject newBlock = setBlockImage(type);
             //if newItem is the first entry in the list then set its 
             //layout x to the initial layout x 
             if (i == 0 || i % hBlocks == 0) {
@@ -271,10 +295,9 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         return pipe;
     }
 
-    private Player createPlayer() {
-        //TODO -  update paper design so that the player starts off in the middle of the screen
+    private Player createPlayer() { 
         Image player = new Image("mario_character.gif");
-        Player marioPlayer = new Player(player, SCENE_WIDTH / 2.5, playersYAxis, 30, 30, 100);
+        Player marioPlayer = new Player(player, SCENE_WIDTH / 2.5, playersYAxis, 50, 50, 100);
         return marioPlayer;
     }
 
