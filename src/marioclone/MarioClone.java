@@ -112,8 +112,10 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         ArrayList<GameObject> clouds = createClouds(25);//quantity, width, height 
         Pipe p1 = createPipe("mario_pipe.png", 50.0, NORMAL_GROUND_Y_AXIS - 50.0, 50, 100);//x,y,width,height
         Pipe p2 = createPipe("mario_pipe.png", 800.0, NORMAL_GROUND_Y_AXIS - 50.0, 50, 100);//x,y,width,height
+        Pipe p3 = createPipe("mario_pipe.png", 1850.0, NORMAL_GROUND_Y_AXIS - 50.0, 50, 100);//x,y,width,height
         pipes.add(p1);
         pipes.add(p2);
+        pipes.add(p3);
 
         int vBlocks = 2, hBlocks = 5;
         StructureType type = StructureType.CUSTOM_NORMAL;
@@ -134,7 +136,7 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
 
         Structure s2 = createStructure(vBlocks, hBlocks, StructureType.REGULAR_INTERACTIVE, initX, initY, inactiveBlocks);
         initY = 200;
-        initX += 900;
+        initX += 500;
         vBlocks = 4;
         hBlocks = 4;
         inactiveBlocks.add(0);
@@ -145,9 +147,56 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         inactiveBlocks.add(8); 
         
         Structure s3 = createStructure(vBlocks, hBlocks, type, initX, initY, inactiveBlocks);
+        
+        
+        
+        initY = 150;
+        initX += 400;
+        vBlocks = 1;
+        hBlocks = 5;
+        inactiveBlocks.clear();
+        inactiveBlocks.add(5);
+        inactiveBlocks.add(6);
+        inactiveBlocks.add(7);
+        inactiveBlocks.add(8);
+        inactiveBlocks.add(9);
+        Structure s4 = createStructure(vBlocks, hBlocks, StructureType.REGULAR_INTERACTIVE, initX, initY, inactiveBlocks);
+
+        
+        initY = 200;
+        initX += 600;
+        vBlocks = 1;
+        hBlocks = 8;
+        inactiveBlocks.clear(); 
+        inactiveBlocks.add(1);
+        inactiveBlocks.add(2);
+        inactiveBlocks.add(3);
+        inactiveBlocks.add(4);
+        inactiveBlocks.add(5);
+        inactiveBlocks.add(6);
+        Structure s5 = createStructure(vBlocks, hBlocks, StructureType.REGULAR_INTERACTIVE, initX, initY, inactiveBlocks);
+        initY = 200;
+        initX += 900;
+        vBlocks = 4;
+        hBlocks = 4;
+        inactiveBlocks.clear();
+        inactiveBlocks.add(5);
+        inactiveBlocks.add(6);
+        inactiveBlocks.add(7);
+        inactiveBlocks.add(8);
+        inactiveBlocks.add(9);
+        Structure s6 = createStructure(vBlocks, hBlocks, StructureType.REGULAR_INTERACTIVE, initX, initY, inactiveBlocks);
+
+        
+         
+        
+        
         structures.add(s1);
         structures.add(s2);
         structures.add(s3);
+        structures.add(s4);
+        structures.add(s5);
+        structures.add(s6);
 
         //Creates the first enemy and starts it's animation 
         Enemy enemy1 = createEnemy(200, 375);
@@ -157,9 +206,13 @@ public class MarioClone extends Application implements EventHandler<ActionEvent>
         addGameObjectsToMap(map, clouds);
         map.add(p1);
         map.add(p2);
+        map.add(p3);
         addStrucutreToMap(map, s1);
         addStrucutreToMap(map, s2);
         addStrucutreToMap(map, s3);
+        addStrucutreToMap(map, s4);
+        addStrucutreToMap(map, s5);
+        addStrucutreToMap(map, s6);
 
         map.add(enemy1);
 
